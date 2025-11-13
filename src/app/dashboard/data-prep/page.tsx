@@ -1,7 +1,6 @@
 
 'use client'
 
-import { useState } from 'react'
 import { FileUp, Sparkles, Filter, ShieldCheck, Repeat } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,25 +9,13 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/hooks/use-toast'
+import { useDataPrep, type MissingStrategy, type OutlierStrategy } from '@/context/data-prep-context'
 
 export default function DataPrepPage() {
-  const [handleMissing, setHandleMissing] = useState(true)
-  const [missingStrategy, setMissingStrategy] = useState('remove')
-  const [removeDuplicates, setRemoveDuplicates] = useState(true)
-  const [handleOutliers, setHandleOutliers] = useState(false)
-  const [outlierStrategy, setOutlierStrategy] = useState('iqr')
+  const { settings, setSettings } = useDataPrep();
   const { toast } = useToast()
 
   const handleSaveSettings = () => {
-    // In a real application, you would save these settings to a user profile
-    // or a persistent state management solution.
-    console.log({
-      handleMissing,
-      missingStrategy,
-      removeDuplicates,
-      handleOutliers,
-      outlierStrategy,
-    });
     toast({
       title: "Settings Saved",
       description: "Your data preparation settings have been updated.",
@@ -62,15 +49,18 @@ export default function DataPrepPage() {
             </Label>
             <Switch
               id="handle-missing"
-              checked={handleMissing}
-              onCheckedChange={setHandleMissing}
+              checked={settings.handleMissing}
+              onCheckedChange={(checked) => setSettings({ handleMissing: checked })}
             />
           </div>
 
-          {handleMissing && (
+          {settings.handleMissing && (
             <div className="pl-10">
               <Label htmlFor="missing-strategy">Strategy</Label>
-              <Select value={missingStrategy} onValueChange={setMissingStrategy}>
+              <Select 
+                value={settings.missingStrategy} 
+                onValueChange={(value) => setSettings({ missingStrategy: value as MissingStrategy })}
+              >
                 <SelectTrigger id="missing-strategy" className="w-full md:w-1/2 mt-1">
                   <SelectValue placeholder="Select strategy" />
                 </SelectTrigger>
@@ -93,8 +83,8 @@ export default function DataPrepPage() {
             </Label>
             <Switch
               id="remove-duplicates"
-              checked={removeDuplicates}
-              onCheckedChange={setRemoveDuplicates}
+              checked={settings.removeDuplicates}
+              onCheckedChange={(checked) => setSettings({ removeDuplicates: checked })}
             />
           </div>
 
@@ -107,15 +97,18 @@ export default function DataPrepPage() {
             </Label>
             <Switch
               id="handle-outliers"
-              checked={handleOutliers}
-              onCheckedChange={setHandleOutliers}
+              checked={settings.handleOutliers}
+              onCheckedChange={(checked) => setSettings({ handleOutliers: checked })}
             />
           </div>
 
-           {handleOutliers && (
+           {settings.handleOutliers && (
             <div className="pl-10">
               <Label htmlFor="outlier-strategy">Method</Label>
-              <Select value={outlierStrategy} onValueChange={setOutlierStrategy}>
+              <Select 
+                value={settings.outlierStrategy} 
+                onValueChange={(value) => setSettings({ outlierStrategy: value as OutlierStrategy })}
+              >
                 <SelectTrigger id="outlier-strategy" className="w-full md:w-1/2 mt-1">
                   <SelectValue placeholder="Select method" />
                 </SelectTrigger>
