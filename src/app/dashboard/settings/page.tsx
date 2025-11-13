@@ -30,6 +30,14 @@ export default function SettingsPage() {
     
     const [name, setName] = React.useState('Demo User');
     const [email, setEmail] = React.useState('demo@example.com');
+    
+    // Add a state to track if the component has mounted
+    const [isClient, setIsClient] = React.useState(false);
+
+    // Set isClient to true only after the component has mounted on the client
+    React.useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const handleProfileSave = () => {
         // In a real application, you would send this data to your backend
@@ -56,6 +64,7 @@ export default function SettingsPage() {
                 </p>
             </div>
             <Separator />
+            {isClient && (
             <Tabs defaultValue="profile" className="w-full">
                 <TabsList className="grid w-full grid-cols-3 max-w-md">
                     <TabsTrigger value="profile">Profile</TabsTrigger>
@@ -202,6 +211,7 @@ export default function SettingsPage() {
                     </Card>
                  </TabsContent>
             </Tabs>
+            )}
         </div>
     )
 }
