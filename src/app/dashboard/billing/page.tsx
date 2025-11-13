@@ -43,9 +43,13 @@ const plansData = [
         ],
         cta: 'Upgrade to Pro',
         isCurrent: false,
+        // =================================================================
         // IMPORTANT: Replace with your actual Plan IDs from PayPal
-        monthlyPlanId: 'P-1234567890123456',
-        yearlyPlanId: 'P-9876543210987654',
+        // To resolve the API error, you must create subscription plans
+        // in your PayPal Developer Dashboard and use the generated IDs here.
+        // =================================================================
+        monthlyPlanId: 'P-1234567890123456', // <-- REPLACE THIS
+        yearlyPlanId: 'P-9876543210987654',  // <-- AND REPLACE THIS
     },
 ]
 
@@ -111,10 +115,7 @@ export default function BillingPage() {
                                 </Button>
                            ) : (
                             <div className="w-full space-y-4">
-                                <Button className="w-full" size="lg">
-                                    {plan.cta} with Card
-                                </Button>
-                                <Separator />
+                                <p className="text-sm text-center text-muted-foreground">Upgrade via Card (coming soon) or PayPal:</p>
                                 <PayPalButtonsWrapper 
                                     planId={billingCycle === 'monthly' ? plan.monthlyPlanId : plan.yearlyPlanId} 
                                 />

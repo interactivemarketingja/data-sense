@@ -14,41 +14,44 @@ interface PayPalButtonsWrapperProps {
   planId: string
 }
 
-const ButtonWrapper = ({ planId }: { planId:string }) => {
+// This wrapper component is needed because PayPalButtons must be a child of PayPalScriptProvider.
+const Buttons = ({ planId }: { planId:string }) => {
   const { toast } = useToast()
 
+  // This function is called when the user clicks the PayPal button.
+  // It creates a subscription on PayPal's servers.
   const createSubscription = async (
     data: Record<string, unknown>,
     actions: CreateSubscriptionActions
   ) => {
-    // In a real application, this would create the subscription on the server.
-    // For this demo, we'll log it and return a placeholder order ID.
-    // This prevents errors from invalid plan IDs in a sandbox environment.
-    console.log('Creating subscription for planId:', planId);
+    // To prevent API errors during development in the cloud IDE, this action
+    // is currently mocked. It logs the planId and returns a mock Order ID.
+    // To make a real transaction, you would use the commented-out code below.
+    console.log('Attempting to create subscription for planId:', planId);
     
-    // This is a mocked action to prevent API errors.
-    // A real implementation would look like:
+    // For a real transaction, you would replace the mock with this:
     // return actions.subscription.create({
-    //   plan_id: planId,
+    //   'plan_id': planId
     // });
     
-    // We return a dummy orderID to proceed to the approval step.
-    return "MOCK-ORDER-ID";
+    // Returning a mock order ID to allow the UI flow to continue.
+    // The "onApprove" function will then be called.
+    return "MOCK_ORDER_ID";
   }
 
+  // This function is called after the user approves the payment in the PayPal popup.
   const onApprove = async (data: OnApproveData, actions: OnApproveActions) => {
-    // This function is called when the user approves the subscription.
-    // In a real application, you would handle the successful subscription here,
-    // e.g., by saving the subscription ID to your database and updating the user's account.
-    console.log('Subscription approved:', data)
+    console.log('Subscription approved by user:', data)
     toast({
       title: 'Subscription Successful! (Demo)',
-      description: `Your subscription (ID: ${data.subscriptionID || 'MOCK-SUB-ID'}) has been activated.`,
+      description: `Your subscription (ID: ${data.subscriptionID || 'MOCK_SUB_ID'}) would be activated here.`,
     })
-    // You can redirect the user or update the UI here.
-    // For this example, we'll just show a success message.
+    // In a real application, you would capture the payment and update the user's
+    // account status in your database.
+    // Example: return actions.subscription.capture();
   }
 
+  // This function is called if an error occurs during the payment process.
   const onError = (err: any) => {
     console.error('PayPal Subscription Error:', err)
     toast({
@@ -61,7 +64,7 @@ const ButtonWrapper = ({ planId }: { planId:string }) => {
 
   return (
     <PayPalButtons
-      key={planId} // Force re-render when planId changes
+      key={planId} // This is important to re-render the button when the plan (monthly/yearly) changes.
       createSubscription={createSubscription}
       onApprove={onApprove}
       onError={onError}
@@ -77,6 +80,7 @@ const ButtonWrapper = ({ planId }: { planId:string }) => {
 
 
 export default function PayPalButtonsWrapper({ planId }: PayPalButtonsWrapperProps) {
+  // IMPORTANT: Replace with your actual PayPal Client ID.
   const PAYPAL_CLIENT_ID = "AVbxHI6gFTYy4L29yX2iwUNbConjdHbQYbB_FJnrMOXFbj93PM1AQgbcDytnYJsA8OfKCtMscEuD7b62"
   
   if (!planId) {
@@ -96,7 +100,7 @@ export default function PayPalButtonsWrapper({ planId }: PayPalButtonsWrapperPro
         vault: true,
       }}
     >
-      <ButtonWrapper planId={planId} />
+      <Buttons planId={planId} />
     </PayPalScriptProvider>
   )
 }
