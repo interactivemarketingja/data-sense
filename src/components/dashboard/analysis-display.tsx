@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowDownToLine, RefreshCcw, ArrowUp, ArrowDown, Save, FileText } from 'lucide-react'
 import { ResponsiveBarChart } from './charts/responsive-bar-chart'
 import { ResponsiveLineChart } from './charts/responsive-line-chart'
+import { ResponsivePieChart } from './charts/responsive-pie-chart'
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -186,6 +187,9 @@ export default function AnalysisDisplay({ result, isLoading, onReset, onSave, is
                 break;
               case 'line':
                 ChartComponent = ResponsiveLineChart;
+                break;
+              case 'pie':
+                ChartComponent = ResponsivePieChart;
                 break;
               default:
                 return null;
