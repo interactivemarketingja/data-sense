@@ -1,7 +1,7 @@
 
 'use client'
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { AnalysisResult } from '@/app/dashboard/page';
 
 // Define the shape of a report
@@ -22,7 +22,7 @@ interface ReportsContextType {
 }
 
 // Initial mock data for reports with dummy analysis
-const initialReports: Report[] = [
+const initialReportsData: Report[] = [
   {
     id: 'REP-001',
     name: 'Q2 2024 Sales Analysis',
@@ -79,7 +79,26 @@ export function useReports() {
 
 // Create the provider component
 export function ReportsProvider({ children }: { children: ReactNode }) {
-  const [reports, setReports] = useState<Report[]>(initialReports);
+  const [reports, setReports] = useState<Report[]>(() => {
+    if (typeof window === 'undefined') {
+      return initialReportsData;
+    }
+    try {
+      const item = window.localStorage.getItem('reports');
+      return item ? JSON.parse(item) : initialReportsData;
+    } catch (error) {
+      console.error(error);
+      return initialReportsData;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem('reports', JSON.stringify(reports));
+    } catch (error) {
+      console.error(error);
+    }
+  }, [reports]);
 
   const getReport = (id: string) => {
     return reports.find(report => report.id === id);
