@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -18,9 +17,13 @@ import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTheme } from "next-themes"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { PlaceHolderImages } from "@/lib/placeholder-images"
+import { User } from "lucide-react"
 
 export default function SettingsPage() {
     const { setTheme, theme } = useTheme()
+    const userAvatar = PlaceHolderImages.find((img) => img.id === 'user-avatar');
 
     return (
         <div className="space-y-6">
@@ -45,7 +48,18 @@ export default function SettingsPage() {
                                 This is how others will see you on the site.
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-6">
+                            <div className="flex items-center gap-4">
+                                <Avatar className="h-20 w-20">
+                                    {userAvatar && (
+                                        <AvatarImage src={userAvatar.imageUrl} alt="User avatar" data-ai-hint={userAvatar.imageHint} />
+                                    )}
+                                    <AvatarFallback>
+                                        <User className="h-10 w-10" />
+                                    </AvatarFallback>
+                                </Avatar>
+                                <Button variant="outline">Change Photo</Button>
+                            </div>
                             <div className="space-y-2">
                                 <Label htmlFor="name">Name</Label>
                                 <Input id="name" defaultValue="Demo User" />
