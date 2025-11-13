@@ -11,15 +11,19 @@ type DataUploadProps = {
   onAnalyze: (file: File) => void;
   isLoading: boolean;
   error: string | null;
+  singleAction?: boolean; // New prop: if true, upload triggers on file selection
 };
 
-export default function DataUpload({ onAnalyze, isLoading, error }: DataUploadProps) {
+export default function DataUpload({ onAnalyze, isLoading, error, singleAction = false }: DataUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFileChange = (selectedFile: File | null) => {
     if (selectedFile) {
       setFile(selectedFile);
+      if (singleAction) {
+          onAnalyze(selectedFile);
+      }
     }
   };
 
@@ -50,6 +54,25 @@ export default function DataUpload({ onAnalyze, isLoading, error }: DataUploadPr
     }
   };
 
+  if (singleAction && file) {
+      return (
+         <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <FileJson className="w-6 h-6 text-primary flex-shrink-0" />
+              <div className="overflow-hidden">
+                <p className="text-sm font-medium truncate">{file.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {(file.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+              </div>
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => setFile(null)}>
+              Change File
+            </Button>
+          </div>
+      )
+  }
+
   return (
     <Card className="w-full max-w-3xl mx-auto animate-in fade-in-50">
       <CardHeader>
@@ -59,7 +82,7 @@ export default function DataUpload({ onAnalyze, isLoading, error }: DataUploadPr
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {error && (
+        {error && !singleAction && (
             <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Analysis Error</AlertTitle>
@@ -96,7 +119,7 @@ export default function DataUpload({ onAnalyze, isLoading, error }: DataUploadPr
           />
         </div>
         
-        {file && (
+        {file && !singleAction && (
           <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
             <div className="flex items-center gap-3 overflow-hidden">
               <FileJson className="w-6 h-6 text-primary flex-shrink-0" />
@@ -113,19 +136,21 @@ export default function DataUpload({ onAnalyze, isLoading, error }: DataUploadPr
           </div>
         )}
 
-        <Button
-          onClick={handleSubmit}
-          disabled={!file || isLoading}
-          className="w-full"
-          size="lg"
-        >
-          {isLoading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <FileUp className="mr-2 h-4 w-4" />
-          )}
-          {isLoading ? 'Analyzing...' : 'Analyze Data'}
-        </Button>
+        {!singleAction && (
+          <Button
+            onClick={handleSubmit}
+            disabled={!file || isLoading}
+            className="w-full"
+            size="lg"
+          >
+            {isLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <FileUp className="mr-2 h-4 w-4" />
+            )}
+            {isLoading ? 'Analyzing...' : 'Analyze Data'}
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
