@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import DataUpload from '@/components/dashboard/data-upload'
 import AnalysisDisplay from '@/components/dashboard/analysis-display'
+import { useReports } from '@/context/reports-context'
+import { useRouter } from 'next/navigation'
 
 export type AnalysisResult = {
   summary: string;
@@ -20,6 +22,9 @@ export default function DashboardPage() {
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { addReport } = useReports();
+  const router = useRouter();
+
 
   const handleAnalysis = async (file: File) => {
     setIsLoading(true)
@@ -80,16 +85,32 @@ export default function DashboardPage() {
 
     setIsLoading(false)
   }
+  
+  const handleSaveReport = (title: string) => {
+    if (analysisResult) {
+      addReport({
+        name: title,
+        status: 'Published',
+        // In a real app, the full analysisResult would be stored
+      });
+      router.push('/dashboard/reports');
+    }
+  };
 
   return (
     <div className="space-y-8">
       {!analysisResult && !isLoading && (
         <DataUpload onAnalyze={handleAnalysis} isLoading={isLoading} error={error} />
       )}
-      <AnalysisDisplay result={analysisResult} isLoading={isLoading} onReset={() => {
-        setAnalysisResult(null);
-        setError(null);
-      }} />
+      <AnalysisDisplay 
+        result={analysisResult} 
+        isLoading={isLoading} 
+        onReset={() => {
+          setAnalysisResult(null);
+          setError(null);
+        }}
+        onSave={handleSaveReport}
+      />
     </div>
   )
 }

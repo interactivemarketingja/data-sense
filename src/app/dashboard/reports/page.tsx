@@ -4,7 +4,6 @@
 import * as React from 'react'
 import Link from 'next/link'
 import {
-  FileText,
   MoreHorizontal,
   PlusCircle,
   Search,
@@ -49,49 +48,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useReports } from '@/context/reports-context'
 
-const initialReports = [
-  {
-    id: 'REP-001',
-    name: 'Q2 2024 Sales Analysis',
-    status: 'Published',
-    createdAt: '2024-07-15T10:30:00Z',
-  },
-  {
-    id: 'REP-002',
-    name: 'Website Traffic Deep-Dive',
-    status: 'Published',
-    createdAt: '2024-07-10T14:00:00Z',
-  },
-  {
-    id: 'REP-003',
-    name: 'Q3 Marketing Campaign Forecast',
-    status: 'Draft',
-    createdAt: '2024-07-20T09:00:00Z',
-  },
-  {
-    id: 'REP-004',
-    name: 'Customer Churn Investigation',
-    status: 'Published',
-    createdAt: '2024-06-28T11:45:00Z',
-  },
-  {
-    id: 'REP-005',
-    name: 'New Product Line Feasibility',
-    status: 'Draft',
-    createdAt: '2024-07-22T16:20:00Z',
-  },
-]
-
-type Report = (typeof initialReports)[0]
 
 export default function ReportsPage() {
-    const [reports, setReports] = React.useState(initialReports);
+    const { reports, deleteReport } = useReports();
     const [searchTerm, setSearchTerm] = React.useState('')
     const [activeTab, setActiveTab] = React.useState('all')
 
     const filteredReports = React.useMemo(() => {
-        let filtered = reports
+        let filtered = [...reports].reverse(); // Show newest first
 
         if (activeTab !== 'all') {
             filtered = filtered.filter(report => report.status.toLowerCase() === activeTab)
@@ -105,10 +71,6 @@ export default function ReportsPage() {
         
         return filtered
     }, [reports, searchTerm, activeTab]);
-
-    const deleteReport = (reportId: string) => {
-        setReports(prevReports => prevReports.filter(report => report.id !== reportId));
-    }
 
 
   return (
@@ -240,7 +202,7 @@ export default function ReportsPage() {
                       colSpan={4}
                       className="h-24 text-center text-muted-foreground"
                     >
-                      No reports found.
+                      No reports found. Generate a new report to see it here.
                     </TableCell>
                   </TableRow>
                 )}

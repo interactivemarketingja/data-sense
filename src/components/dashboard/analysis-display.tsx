@@ -1,17 +1,32 @@
 'use client'
 
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { AnalysisResult } from '@/app/dashboard/page'
 import { Button } from '@/components/ui/button'
-import { ArrowDownToLine, RefreshCcw, ArrowUp, ArrowDown } from 'lucide-react'
+import { ArrowDownToLine, RefreshCcw, ArrowUp, ArrowDown, Save } from 'lucide-react'
 import { ResponsiveBarChart } from './charts/responsive-bar-chart'
 import { ResponsiveLineChart } from './charts/responsive-line-chart'
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
 
 type AnalysisDisplayProps = {
   result: AnalysisResult | null;
   isLoading: boolean;
   onReset: () => void;
+  onSave: (title: string) => void;
 };
 
 const MetricCard = ({ title, value, change, changeType }: { title: string; value: string; change?: string; changeType?: 'increase' | 'decrease' }) => (
@@ -57,7 +72,9 @@ const AnalysisDisplaySkeleton = () => (
     </div>
 );
 
-export default function AnalysisDisplay({ result, isLoading, onReset }: AnalysisDisplayProps) {
+export default function AnalysisDisplay({ result, isLoading, onReset, onSave }: AnalysisDisplayProps) {
+  const [reportTitle, setReportTitle] = useState(`Report - ${new Date().toLocaleDateString()}`);
+
   if (isLoading) {
     return <AnalysisDisplaySkeleton />;
   }
@@ -68,6 +85,10 @@ export default function AnalysisDisplay({ result, isLoading, onReset }: Analysis
   
   const handlePrint = () => {
     window.print();
+  }
+  
+  const handleSave = () => {
+    onSave(reportTitle);
   }
 
   return (
@@ -82,6 +103,34 @@ export default function AnalysisDisplay({ result, isLoading, onReset }: Analysis
                     <ArrowDownToLine className="mr-2 h-4 w-4" />
                     Download PDF
                 </Button>
+                 <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline">
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Report
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Save Report</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Give your report a title to save it for later viewing.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="space-y-2">
+                      <Label htmlFor="report-title">Report Title</Label>
+                      <Input 
+                        id="report-title"
+                        value={reportTitle}
+                        onChange={(e) => setReportTitle(e.target.value)}
+                      />
+                    </div>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleSave}>Save</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
                  <Button variant="default" onClick={onReset}>
                     <RefreshCcw className="mr-2 h-4 w-4" />
                     New Analysis
