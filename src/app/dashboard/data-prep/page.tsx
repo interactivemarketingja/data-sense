@@ -1,4 +1,3 @@
-
 'use client'
 
 import { FileUp, Sparkles, Filter, ShieldCheck, Repeat } from 'lucide-react'
