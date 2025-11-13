@@ -37,7 +37,7 @@ type AnalysisDisplayProps = {
 };
 
 const MetricCard = ({ title, value, change, changeType }: { title: string; value: string; change?: string; changeType?: 'increase' | 'decrease' }) => (
-    <Card>
+    <Card className="print:border">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{title}</CardTitle>
         </CardHeader>
@@ -104,8 +104,8 @@ export default function AnalysisDisplay({ result, isLoading, onReset, onSave, is
     : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
-    <div className="space-y-8 animate-in fade-in-50">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-8 animate-in fade-in-50 print:!block" id="analysis-content">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 print:hidden">
             <div>
                 <h1 className="text-3xl font-bold tracking-tight font-headline">{effectiveTitle}</h1>
                 <p className="text-muted-foreground">Generated on {effectiveDate}</p>
@@ -160,11 +160,17 @@ export default function AnalysisDisplay({ result, isLoading, onReset, onSave, is
                 )}
             </div>
         </div>
+        
+        <div className="hidden print:block text-center mb-8">
+            <h1 className="text-3xl font-bold tracking-tight font-headline">{effectiveTitle}</h1>
+            <p className="text-muted-foreground">Generated on {effectiveDate}</p>
+        </div>
 
-      <Card>
+
+      <Card className="print:border print:shadow-none">
         <CardHeader>
           <CardTitle>AI-Generated Summary</CardTitle>
-          <CardDescription>Key insights from your data, powered by AI.</CardDescription>
+          <CardDescription className="print:hidden">Key insights from your data, powered by AI.</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-foreground/80 leading-relaxed">{result.summary}</p>
@@ -172,7 +178,7 @@ export default function AnalysisDisplay({ result, isLoading, onReset, onSave, is
       </Card>
 
       {result.keyMetrics.length > 0 && (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 print:grid-cols-2">
           {result.keyMetrics.map((metric, index) => (
             <MetricCard key={index} {...metric} />
           ))}
@@ -180,7 +186,7 @@ export default function AnalysisDisplay({ result, isLoading, onReset, onSave, is
       )}
 
       {result.charts.length > 0 && (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2 print:grid-cols-1">
           {result.charts.map((chart, index) => {
             let ChartComponent;
             switch (chart.type) {
@@ -203,10 +209,10 @@ export default function AnalysisDisplay({ result, isLoading, onReset, onSave, is
                 return null;
             }
             return (
-              <Card key={index}>
+              <Card key={index} className="print:border print:shadow-none break-inside-avoid">
                 <CardHeader>
                   <CardTitle>{chart.title}</CardTitle>
-                  <CardDescription>{chart.description}</CardDescription>
+                  <CardDescription className="print:hidden">{chart.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ChartComponent data={chart.data} config={chart.config} />

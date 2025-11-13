@@ -15,10 +15,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <DataPrepProvider>
         <DataProvider>
             <SidebarProvider>
-                <SidebarNav />
+                <div className="print-hidden">
+                    <SidebarNav />
+                </div>
                 <SidebarInset>
-                    <Header />
-                    <div className="p-4 sm:p-6 lg:p-8">
+                    <div className="print-hidden">
+                        <Header />
+                    </div>
+                    <div className="p-4 sm:p-6 lg:p-8 print:p-0">
                         {children}
                     </div>
                 </SidebarInset>
