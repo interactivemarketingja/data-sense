@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Rocket, LayoutDashboard, BarChart3, FileText, Settings } from 'lucide-react'
+import { Rocket, LayoutDashboard, BarChart3, FileText, Settings, CreditCard } from 'lucide-react'
 import {
   Sidebar,
   SidebarHeader,
@@ -23,6 +23,7 @@ export default function SidebarNav() {
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/dashboard/reports', label: 'Reports', icon: FileText },
     { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
+    { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
     { href: '/dashboard/settings', label: 'Settings', icon: Settings },
   ]
 
@@ -61,7 +62,9 @@ export default function SidebarNav() {
                     <CardDescription className="text-xs">Unlock all features and get unlimited access to our support team.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-3 pt-0">
-                    <Button size="sm" className="w-full">Upgrade</Button>
+                    <Button size="sm" className="w-full" asChild>
+                      <Link href="/dashboard/billing">Upgrade</Link>
+                    </Button>
                 </CardContent>
             </Card>
         </div>
