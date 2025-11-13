@@ -29,7 +29,7 @@ const plansData = [
     {
         name: 'Pro',
         monthlyPrice: 29,
-        yearlyPrice: 278, // $29 * 12 * 0.8 = 278.4, rounded
+        yearlyPrice: 278,
         description: 'For growing businesses that need more power.',
         features: [
             { text: 'Unlimited reports', included: true },
