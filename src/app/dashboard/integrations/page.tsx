@@ -1,0 +1,85 @@
+
+'use client'
+
+import { Database, GanttChartSquare, Bot, FileJson, Snowflake, UploadCloud } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { useToast } from "@/hooks/use-toast"
+
+const integrations = [
+    {
+        name: 'PostgreSQL',
+        description: 'Connect to your self-hosted or managed PostgreSQL database.',
+        icon: <Database className="w-8 h-8 text-primary" />,
+    },
+    {
+        name: 'MySQL',
+        description: 'Sync data directly from your MySQL or MariaDB instances.',
+        icon: <Database className="w-8 h-8 text-primary" />,
+    },
+    {
+        name: 'Snowflake',
+        description: 'Integrate with your Snowflake data cloud for large-scale analytics.',
+        icon: <Snowflake className="w-8 h-8 text-primary" />,
+    },
+    {
+        name: 'Google BigQuery',
+        description: 'Analyze massive datasets by connecting to Google BigQuery.',
+        icon: <GanttChartSquare className="w-8 h-8 text-primary" />,
+    },
+    {
+        name: 'Amazon S3',
+        description: 'Connect to an S3 bucket to process files stored in the cloud.',
+        icon: <UploadCloud className="w-8 h-8 text-primary" />,
+    },
+    {
+        name: 'Google Sheets',
+        description: 'Import data directly from your spreadsheets in Google Sheets.',
+        icon: <FileJson className="w-8 h-8 text-primary" />,
+    },
+]
+
+
+export default function IntegrationsPage() {
+    const { toast } = useToast()
+
+    const handleConnect = (name: string) => {
+        toast({
+            title: `Connecting to ${name}`,
+            description: "This is a demo. In a real application, this would initiate the connection process.",
+        })
+    }
+
+  return (
+    <div className="space-y-8">
+        <div>
+            <h1 className="text-3xl font-bold tracking-tight font-headline">Integrations</h1>
+            <p className="text-muted-foreground">
+                Connect your data sources to automatically sync and analyze data.
+            </p>
+        </div>
+        <Separator />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {integrations.map((integration) => (
+                <Card key={integration.name} className="flex flex-col">
+                    <CardHeader className="flex flex-row items-start gap-4">
+                         {integration.icon}
+                         <div className="space-y-1">
+                            <CardTitle>{integration.name}</CardTitle>
+                            <CardDescription>{integration.description}</CardDescription>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="flex-grow" />
+                    <div className="p-6 pt-0">
+                         <Button className="w-full" onClick={() => handleConnect(integration.name)}>
+                            Connect
+                        </Button>
+                    </div>
+                </Card>
+            ))}
+        </div>
+    </div>
+  )
+}

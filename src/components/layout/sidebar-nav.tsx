@@ -3,7 +3,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Rocket, LayoutDashboard, BarChart3, FileText, Settings, CreditCard, Filter } from 'lucide-react'
+import { Rocket, LayoutDashboard, BarChart3, FileText, Settings, CreditCard, Filter, Plug } from 'lucide-react'
 import {
   Sidebar,
   SidebarHeader,
@@ -25,6 +25,7 @@ export default function SidebarNav() {
     { href: '/dashboard/data-prep', label: 'Data Prep', icon: Filter },
     { href: '/dashboard/reports', label: 'Reports', icon: FileText },
     { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
+    { href: '/dashboard/integrations', label: 'Integrations', icon: Plug },
     { href: '/dashboard/billing', label: 'Billing', icon: CreditCard },
     { href: '/dashboard/settings', label: 'Settings', icon: Settings },
   ]
