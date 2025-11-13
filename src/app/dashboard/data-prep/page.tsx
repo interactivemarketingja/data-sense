@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState } from 'react'
@@ -8,6 +9,7 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { useToast } from '@/hooks/use-toast'
 
 export default function DataPrepPage() {
   const [handleMissing, setHandleMissing] = useState(true)
@@ -15,6 +17,23 @@ export default function DataPrepPage() {
   const [removeDuplicates, setRemoveDuplicates] = useState(true)
   const [handleOutliers, setHandleOutliers] = useState(false)
   const [outlierStrategy, setOutlierStrategy] = useState('iqr')
+  const { toast } = useToast()
+
+  const handleSaveSettings = () => {
+    // In a real application, you would save these settings to a user profile
+    // or a persistent state management solution.
+    console.log({
+      handleMissing,
+      missingStrategy,
+      removeDuplicates,
+      handleOutliers,
+      outlierStrategy,
+    });
+    toast({
+      title: "Settings Saved",
+      description: "Your data preparation settings have been updated.",
+    })
+  }
 
   return (
     <div className="space-y-8">
@@ -110,7 +129,7 @@ export default function DataPrepPage() {
           )}
         </CardContent>
         <CardFooter>
-            <Button size="lg">
+            <Button size="lg" onClick={handleSaveSettings}>
                 <Sparkles className="mr-2 h-4 w-4" />
                 Save Settings
             </Button>
