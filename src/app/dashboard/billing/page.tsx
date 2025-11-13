@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import PayPalButtonsWrapper from "@/components/billing/paypal-buttons"
 
 const plansData = [
     {
@@ -25,6 +26,8 @@ const plansData = [
         ],
         cta: 'Current Plan',
         isCurrent: true,
+        monthlyPlanId: '',
+        yearlyPlanId: '',
     },
     {
         name: 'Pro',
@@ -40,6 +43,9 @@ const plansData = [
         ],
         cta: 'Upgrade to Pro',
         isCurrent: false,
+        // IMPORTANT: Replace with your actual Plan IDs from PayPal
+        monthlyPlanId: 'P-1234567890123456',
+        yearlyPlanId: 'P-9876543210987654',
     },
 ]
 
@@ -104,14 +110,14 @@ export default function BillingPage() {
                                     {plan.cta}
                                 </Button>
                            ) : (
-                            <div className="w-full space-y-2">
-                                <Button className="w-full">
-                                    {plan.cta}
+                            <div className="w-full space-y-4">
+                                <Button className="w-full" size="lg">
+                                    {plan.cta} with Card
                                 </Button>
-                                <Button variant="outline" className="w-full">
-                                    <svg className="w-4 h-4 mr-2" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>PayPal</title><path d="M7.333 23.528c-2.563 0-4.44-1.637-4.44-4.15 0-2.934 2.227-3.963 4.633-3.963h1.49v2.522H7.352c-.9 0-1.42.34-.961 1.25.46 1.054 1.402 1.077 2.368.608l.214-.107.56-2.895c.14-.72.76-1.125 1.5-1.125h2.868c2.937 0 4.6 1.68 4.6 3.98 0 2.05-1.173 3.61-3.237 3.61H9.423c-.722 0-1.38-.404-1.5-1.125L7.333 23.528zm10.05-10.232c-1.312 0-2.113-.78-2.528-1.724-.62-1.362-.23-3.03.938-3.03 1.33 0 2.13.792 2.545 1.736.62 1.35.233 3.018-.955 3.018zm-5.625 0c-1.312 0-2.113-.78-2.528-1.724-.62-1.362-.23-3.03.938-3.03 1.33 0 2.13.792 2.545 1.736.62 1.35.233 3.018-.955 3.018zm-5.625 0c-1.312 0-2.113-.78-2.528-1.724-.62-1.362-.23-3.03.938-3.03 1.33 0 2.13.792 2.545 1.736.62 1.35.233 3.018-.955 3.018zm-.937-6.23c-3.125 0-5.367 2.21-5.367 5.176 0 2.454 1.637 4.545 4.14 4.545h.333l.16-.832c-.127 0-.258-.002-.388-.002-1.313 0-2.113-.78-2.528-1.724-.62-1.362-.23-3.03.938-3.03 1.33 0 2.13.792 2.545 1.736.62 1.35.233 3.018-.955 3.018h.15c.31-.002.623-.01.938-.02l.213-1.103c.14-.72.76-1.125 1.5-1.125h2.868c3.125 0 5.367-2.21 5.367-5.176 0-2.454-1.637-4.545-4.14-4.545H5.197zm10.7 0h-2.868c-.74 0-1.36.405-1.5 1.125l-.333 1.724c-.03.14-.05.28-.05.43 0 1.95 1.14 3.52 3.104 3.52s3.104-1.57 3.104-3.52c0-2.03-1.173-3.68-3.237-3.68l-.21-.002z"/></svg>
-                                    Pay with PayPal
-                                </Button>
+                                <Separator />
+                                <PayPalButtonsWrapper 
+                                    planId={billingCycle === 'monthly' ? plan.monthlyPlanId : plan.yearlyPlanId} 
+                                />
                             </div>
                            )}
                         </CardFooter>
