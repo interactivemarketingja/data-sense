@@ -2,6 +2,7 @@
 'use client'
 
 import * as React from 'react'
+import Link from 'next/link'
 import {
   FileText,
   MoreHorizontal,
@@ -93,7 +94,7 @@ export default function ReportsPage() {
         let filtered = reports
 
         if (activeTab !== 'all') {
-            filtered = filtered.filter(report => report.status === activeTab)
+            filtered = filtered.filter(report => report.status.toLowerCase() === activeTab)
         }
 
         if (searchTerm) {
@@ -115,8 +116,8 @@ export default function ReportsPage() {
       <div className="flex items-center">
         <TabsList>
           <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="Published">Published</TabsTrigger>
-          <TabsTrigger value="Draft">Draft</TabsTrigger>
+          <TabsTrigger value="published">Published</TabsTrigger>
+          <TabsTrigger value="draft">Draft</TabsTrigger>
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
           <div className="relative">
@@ -129,11 +130,13 @@ export default function ReportsPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button size="sm" className="h-8 gap-1">
-            <PlusCircle className="h-3.5 w-3.5" />
-            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              New Report
-            </span>
+          <Button size="sm" className="h-8 gap-1" asChild>
+            <Link href="/dashboard">
+              <PlusCircle className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                New Report
+              </span>
+            </Link>
           </Button>
         </div>
       </div>
