@@ -34,7 +34,7 @@ const ChartSchema = z.object({
 const AnalyzeDataOutputSchema = z.object({
   summary: z.string().describe("A comprehensive, multi-paragraph summary of the key insights, patterns, trends, and anomalies found in the data. Provide a narrative that explains the information."),
   keyMetrics: z.array(KeyMetricSchema).describe("An array of 2-4 key metrics derived from the data."),
-  charts: z.array(ChartSchema).describe("An array of 2-4 chart objects to visualize the data. Ensure the data format is correct for Recharts (an array of objects). For bar/line charts, data objects should have a key for the x-axis and a key for the y-axis."),
+  charts: z.array(ChartSchema).describe("An array of 2-4 chart objects to visualize the data. Ensure the data format is correct for Recharts (an array of objects). For bar/line charts, data objects should have a key for the x-axis and a key for the y-axis. For pie charts, data should have a name and a value key."),
 });
 export type AnalyzeDataOutput = z.infer<typeof AnalyzeDataOutputSchema>;
 
@@ -57,7 +57,7 @@ File Content:
 Based on your analysis, provide the following in a JSON object:
 1.  **Summary**: A detailed, multi-paragraph summary of the most important findings. Identify key trends, patterns, and any anomalies. Create a compelling narrative that explains what the data means.
 2.  **Key Metrics**: Identify 2 to 4 crucial key performance indicators (KPIs). For each metric, provide a title, its value, and optionally, a change from a previous period if inferable.
-3.  **Charts**: Suggest 2 to 4 visualizations to represent the data. For each chart, specify the type ('bar', 'line', or 'pie'), a title, a description, the data formatted as a JSON array of objects for Recharts, and a config object. The 'config' should map data keys to labels and colors (e.g., \`{ "desktop": { "label": "Desktop Revenue", "color": "hsl(var(--primary))" } }\`). Make sure the data is structured correctly for the specified chart type. The data should not exceed 10 records per chart to keep it concise.
+3.  **Charts**: Suggest 2 to 4 visualizations to represent the data. For each chart, specify the type ('bar', 'line', or 'pie'), a title, a description, the data formatted as a JSON array of objects for Recharts, and a config object. The 'config' should map data keys to labels and colors (e.g., \`{ "desktop": { "label": "Desktop Revenue", "color": "hsl(var(--primary))" } }\`). Make sure the data is structured correctly for the specified chart type. For pie charts, data objects should have 'name' and 'value' keys. The data should not exceed 10 records per chart to keep it concise.
 `,
 });
 

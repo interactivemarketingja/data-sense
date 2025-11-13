@@ -1,8 +1,10 @@
 'use client'
 
-import { Pie, PieChart, Cell, Tooltip } from 'recharts'
+import * as React from 'react';
+import { Pie, PieChart, Cell } from 'recharts'
 import {
   ChartContainer,
+  ChartTooltip,
   ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
@@ -14,34 +16,70 @@ type ResponsivePieChartProps = {
   config: ChartConfig;
 }
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF", "#FF1919"];
-
 export function ResponsivePieChart({ data, config }: ResponsivePieChartProps) {
-  const dataKey = Object.keys(config)[0] || 'value';
-  const nameKey = Object.keys(config)[1] || 'name';
+  const dataKey = "value";
+  const nameKey = "name";
 
+  // Assign a color to each data item from the config
+  const chartData = React.useMemo(() => {
+    return data.map(item => ({
+      ...item,
+      fill: `var(--color-${item.name})`
+    }));
+  }, [data]);
+  
   return (
-    <ChartContainer config={config} className="min-h-[250px] w-full">
+    <ChartContainer config={config} className="min-h-[250px] w-full flex items-center justify-center">
       <PieChart>
-        <Tooltip content={<ChartTooltipContent />} />
+        <ChartTooltip
+          cursor={false}
+          content={<ChartTooltipContent hideLabel />}
+        />
         <Pie
-          data={data}
+          data={chartData}
           dataKey={dataKey}
           nameKey={nameKey}
           cx="50%"
           cy="50%"
           outerRadius={80}
-          label
+          innerRadius={60}
+          labelLine={false}
+          label={({
+            cx,
+            cy,
+            midAngle,
+            innerRadius,
+            outerRadius,
+            value,
+            index,
+          }) => {
+            const RADIAN = Math.PI / 180
+            const radius = 12 + innerRadius + (outerRadius - innerRadius)
+            const x = cx + radius * Math.cos(-midAngle * RADIAN)
+            const y = cy + radius * Math.sin(-midAngle * RADIAN)
+
+            return (
+              <text
+                x={x}
+                y={y}
+                className="fill-muted-foreground text-xs"
+                textAnchor={x > cx ? 'start' : 'end'}
+                dominantBaseline="central"
+              >
+                {chartData[index].name} ({value}%)
+              </text>
+            )
+          }}
         >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          {chartData.map((entry) => (
+            <Cell key={`cell-${entry.name}`} fill={entry.fill} />
           ))}
         </Pie>
         <ChartLegend
-            content={<ChartLegendContent />}
-            wrapperStyle={{
-                paddingTop: 20
-            }}
+          content={<ChartLegendContent nameKey="name" />}
+          verticalAlign="bottom"
+          align="center"
+          iconType="circle"
         />
       </PieChart>
     </ChartContainer>
