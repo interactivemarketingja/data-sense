@@ -2,7 +2,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Database, GanttChartSquare, Bot, FileJson, Snowflake, UploadCloud, Lock } from "lucide-react"
+import { Database, GanttChartSquare, Bot, FileJson, Snowflake, UploadCloud, Lock, SlidersHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -79,7 +79,7 @@ export default function IntegrationsPage() {
                         <li>Connect to PostgreSQL, MySQL, and Snowflake</li>
                         <li>Sync data from Google BigQuery and Amazon S3</li>
                         <li>Import directly from Google Sheets</li>
-                        <li>Automate your data analysis workflow</li>
+                        <li>Automate your data analysis workflow with ETL pipelines</li>
                     </ul>
                     <Button size="lg" asChild>
                         <Link href="/dashboard/billing">Upgrade to Pro</Link>
@@ -88,6 +88,21 @@ export default function IntegrationsPage() {
             </Card>
         ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Card className="flex flex-col md:col-span-2 lg:col-span-3 border-2 border-primary/50 bg-primary/5">
+                     <CardHeader className="flex flex-row items-start gap-4">
+                        <SlidersHorizontal className="w-8 h-8 text-primary" />
+                        <div className="space-y-1">
+                            <CardTitle>Automated ETL Pipelines</CardTitle>
+                            <CardDescription>Extract, transform, and load data automatically to reduce manual data handling and improve accuracy.</CardDescription>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="flex-grow" />
+                    <div className="p-6 pt-0">
+                        <Button className="w-full" onClick={() => handleConnect('ETL Pipelines')}>
+                            Configure Pipeline
+                        </Button>
+                    </div>
+                </Card>
                 {integrations.map((integration) => (
                     <Card key={integration.name} className="flex flex-col">
                         <CardHeader className="flex flex-row items-start gap-4">
