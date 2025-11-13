@@ -4,12 +4,14 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { AnalysisResult } from '@/app/dashboard/page'
+import type { AnalyzeDataOutput } from '@/ai/flows/analyze-data-flow'
 import { Button } from '@/components/ui/button'
 import { ArrowDownToLine, RefreshCcw, ArrowUp, ArrowDown, Save, FileText } from 'lucide-react'
 import { ResponsiveBarChart } from './charts/responsive-bar-chart'
 import { ResponsiveLineChart } from './charts/responsive-line-chart'
 import { ResponsivePieChart } from './charts/responsive-pie-chart'
+import { ResponsiveAreaChart } from './charts/responsive-area-chart'
+import { ResponsiveTreeMap } from './charts/responsive-treemap'
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +27,7 @@ import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 
 type AnalysisDisplayProps = {
-  result: AnalysisResult | null;
+  result: AnalyzeDataOutput | null;
   isLoading: boolean;
   onReset: () => void;
   onSave: (title: string) => void;
@@ -190,6 +192,12 @@ export default function AnalysisDisplay({ result, isLoading, onReset, onSave, is
                 break;
               case 'pie':
                 ChartComponent = ResponsivePieChart;
+                break;
+              case 'area':
+                ChartComponent = ResponsiveAreaChart;
+                break;
+              case 'treemap':
+                ChartComponent = ResponsiveTreeMap;
                 break;
               default:
                 return null;

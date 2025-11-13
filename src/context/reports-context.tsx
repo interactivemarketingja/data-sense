@@ -2,7 +2,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import type { AnalysisResult } from '@/app/dashboard/page';
+import type { AnalyzeDataOutput } from '@/ai/flows/analyze-data-flow';
 
 // Define the shape of a report
 export interface Report {
@@ -10,7 +10,7 @@ export interface Report {
   name: string;
   status: 'Published' | 'Draft';
   createdAt: string;
-  analysis: AnalysisResult; 
+  analysis: AnalyzeDataOutput; 
 }
 
 // Define the shape of the context

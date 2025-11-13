@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState } from 'react'
@@ -11,10 +10,8 @@ import { analyzeData, type AnalyzeDataOutput } from '@/ai/flows/analyze-data-flo
 import { useDataPrep } from '@/context/data-prep-context'
 import { processData } from '@/lib/data-processor'
 
-export type AnalysisResult = AnalyzeDataOutput;
-
 export default function DashboardPage() {
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
+  const [analysisResult, setAnalysisResult] = useState<AnalyzeDataOutput | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { addReport } = useReports();
@@ -36,7 +33,12 @@ export default function DashboardPage() {
             // Process the data using the settings from the context
             const processedContent = processData(fileContent, file.name, dataPrepSettings);
             
-            const result = await analyzeData({ fileContent: processedContent, fileName: file.name });
+            const result = await analyzeData({ 
+                fileContent: processedContent, 
+                fileName: file.name, 
+                analysisType: 'descriptive', // Default to descriptive for the main page
+                question: '' 
+            });
             setAnalysisResult(result);
         } catch (e: any) {
             console.error(e);
