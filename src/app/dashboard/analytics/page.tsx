@@ -44,8 +44,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
-import { ResponsiveLineChart } from '@/components/dashboard/charts/responsive-line-chart'
-import { ResponsiveBarChart } from '@/components/dashboard/charts/responsive-bar-chart'
 import { ResponsiveAreaChart } from '@/components/dashboard/charts/responsive-area-chart'
 import { CalendarDateRangePicker } from '@/components/ui/date-range-picker'
 
