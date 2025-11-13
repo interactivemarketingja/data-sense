@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import PayPalButtons from "@/components/billing/paypal-buttons"
+import PayPalSubscribeButtons from "@/components/billing/paypal-buttons"
 
 // In a real application, these would come from your PayPal product/plan configuration
 const proPlanMonthlyId = 'P-1234567890123456'; // Replace with your actual monthly plan ID
@@ -104,13 +104,13 @@ export default function BillingPage() {
                                 ))}
                             </ul>
                         </CardContent>
-                        <CardFooter className="flex-col items-stretch space-y-2">
+                        <CardFooter>
                            {plan.isCurrent ? (
                                 <Button className="w-full" disabled={plan.isCurrent}>
                                     {plan.cta}
                                 </Button>
                            ) : (
-                                <PayPalButtons planId={billingCycle === 'monthly' ? proPlanMonthlyId : proPlanYearlyId} />
+                                <PayPalSubscribeButtons planId={billingCycle === 'monthly' ? proPlanMonthlyId : proPlanYearlyId} />
                            )}
                         </CardFooter>
                     </Card>

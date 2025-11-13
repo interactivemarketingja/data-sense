@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
-import Script from "next/script";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +14,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test";
+
+  const initialOptions = {
+    "client-id": paypalClientId,
+    currency: "USD",
+    intent: "subscription",
+    "data-sdk-integration-source": "developer-studio"
+  };
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -27,21 +34,17 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        {paypalClientId && (
-            <Script 
-                src={`https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=USD&intent=subscription`} 
-                data-sdk-integration-source="developer-studio"
-            />
-        )}
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        <PayPalScriptProvider options={initialOptions}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster />
+            </ThemeProvider>
+        </PayPalScriptProvider>
       </body>
     </html>
   );
