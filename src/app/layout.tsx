@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from "@/components/theme-provider";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,14 +13,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "test";
-
-  const initialOptions = {
-    "client-id": paypalClientId,
-    currency: "USD",
-    intent: "subscription",
-    "data-sdk-integration-source": "developer-studio"
-  };
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -34,17 +25,10 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <PayPalScriptProvider options={initialOptions}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <Toaster />
-            </ThemeProvider>
-        </PayPalScriptProvider>
+        <Providers>
+            {children}
+            <Toaster />
+        </Providers>
       </body>
     </html>
   );
