@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState } from 'react'
@@ -7,6 +8,8 @@ import { useReports } from '@/context/reports-context'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast'
 import { analyzeData, type AnalyzeDataOutput } from '@/ai/flows/analyze-data-flow'
+import { useDataPrep } from '@/context/data-prep-context'
+import { processData } from '@/lib/data-processor'
 
 export type AnalysisResult = AnalyzeDataOutput;
 
@@ -17,6 +20,7 @@ export default function DashboardPage() {
   const { addReport } = useReports();
   const router = useRouter();
   const { toast } = useToast();
+  const { settings: dataPrepSettings } = useDataPrep();
 
 
   const handleAnalysis = async (file: File) => {
@@ -28,7 +32,11 @@ export default function DashboardPage() {
     reader.onload = async (event) => {
         try {
             const fileContent = event.target?.result as string;
-            const result = await analyzeData({ fileContent, fileName: file.name });
+            
+            // Process the data using the settings from the context
+            const processedContent = processData(fileContent, file.name, dataPrepSettings);
+            
+            const result = await analyzeData({ fileContent: processedContent, fileName: file.name });
             setAnalysisResult(result);
         } catch (e: any) {
             console.error(e);
