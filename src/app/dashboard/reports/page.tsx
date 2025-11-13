@@ -37,8 +37,19 @@ import {
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
-const mockReports = [
+const initialReports = [
   {
     id: 'REP-001',
     name: 'Q2 2024 Sales Analysis',
@@ -71,31 +82,36 @@ const mockReports = [
   },
 ]
 
-type Report = (typeof mockReports)[0]
+type Report = (typeof initialReports)[0]
 
 export default function ReportsPage() {
+    const [reports, setReports] = React.useState(initialReports);
     const [searchTerm, setSearchTerm] = React.useState('')
     const [activeTab, setActiveTab] = React.useState('all')
 
     const filteredReports = React.useMemo(() => {
-        let reports = mockReports
+        let filtered = reports
 
         if (activeTab !== 'all') {
-            reports = reports.filter(report => report.status.toLowerCase() === activeTab)
+            filtered = filtered.filter(report => report.status === activeTab)
         }
 
         if (searchTerm) {
-            reports = reports.filter(report =>
+            filtered = filtered.filter(report =>
                 report.name.toLowerCase().includes(searchTerm.toLowerCase())
             )
         }
         
-        return reports
-    }, [searchTerm, activeTab]);
+        return filtered
+    }, [reports, searchTerm, activeTab]);
+
+    const deleteReport = (reportId: string) => {
+        setReports(prevReports => prevReports.filter(report => report.id !== reportId));
+    }
 
 
   return (
-    <Tabs defaultValue="all" onValueChange={setActiveTab}>
+    <Tabs defaultValue="all" onValueChange={setActiveTab} value={activeTab}>
       <div className="flex items-center">
         <TabsList>
           <TabsTrigger value="all">All</TabsTrigger>
@@ -185,9 +201,31 @@ export default function ReportsPage() {
                             <DropdownMenuItem>
                               <Download className="mr-2 h-4 w-4" /> Download
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">
-                              <Trash2 className="mr-2 h-4 w-4" /> Delete
-                            </DropdownMenuItem>
+                             <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem
+                                        onSelect={(e) => e.preventDefault()}
+                                        className="text-destructive"
+                                    >
+                                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete the report
+                                            &quot;{report.name}&quot;.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => deleteReport(report.id)}>
+                                            Continue
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
