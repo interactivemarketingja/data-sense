@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast'
 import { analyzeData, type AnalyzeDataOutput } from '@/ai/flows/analyze-data-flow'
 import { useDataPrep } from '@/context/data-prep-context'
 import { processData } from '@/lib/data-processor'
+import { useData } from '@/context/data-context'
 
 export default function DashboardPage() {
   const [analysisResult, setAnalysisResult] = useState<AnalyzeDataOutput | null>(null)
@@ -18,6 +19,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { settings: dataPrepSettings } = useDataPrep();
+  const { setData } = useData();
 
 
   const handleAnalysis = async (file: File) => {
@@ -29,6 +31,9 @@ export default function DashboardPage() {
     reader.onload = async (event) => {
         try {
             const fileContent = event.target?.result as string;
+            
+            // Set the data in the context
+            setData({ fileContent, fileName: file.name, file });
             
             // Process the data using the settings from the context
             const processedContent = processData(fileContent, file.name, dataPrepSettings);
@@ -69,6 +74,12 @@ export default function DashboardPage() {
     }
   };
 
+  const handleReset = () => {
+    setAnalysisResult(null);
+    setError(null);
+    setData({ fileContent: null, fileName: null, file: null });
+  }
+
   return (
     <div className="space-y-8">
       {!analysisResult && !isLoading && (
@@ -77,10 +88,7 @@ export default function DashboardPage() {
       <AnalysisDisplay 
         result={analysisResult} 
         isLoading={isLoading} 
-        onReset={() => {
-          setAnalysisResult(null);
-          setError(null);
-        }}
+        onReset={handleReset}
         onSave={handleSaveReport}
         isSaved={false}
       />
