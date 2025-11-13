@@ -1,7 +1,8 @@
 
 'use client'
 
-import { Database, GanttChartSquare, Bot, FileJson, Snowflake, UploadCloud } from "lucide-react"
+import Link from 'next/link'
+import { Database, GanttChartSquare, Bot, FileJson, Snowflake, UploadCloud, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -43,6 +44,7 @@ const integrations = [
 
 export default function IntegrationsPage() {
     const { toast } = useToast()
+    const isProUser = false; // In a real app, this would come from user state
 
     const handleConnect = (name: string) => {
         toast({
@@ -61,25 +63,50 @@ export default function IntegrationsPage() {
         </div>
         <Separator />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {integrations.map((integration) => (
-                <Card key={integration.name} className="flex flex-col">
-                    <CardHeader className="flex flex-row items-start gap-4">
-                         {integration.icon}
-                         <div className="space-y-1">
-                            <CardTitle>{integration.name}</CardTitle>
-                            <CardDescription>{integration.description}</CardDescription>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="flex-grow" />
-                    <div className="p-6 pt-0">
-                         <Button className="w-full" onClick={() => handleConnect(integration.name)}>
-                            Connect
-                        </Button>
+        {!isProUser ? (
+            <Card className="max-w-2xl mx-auto text-center shadow-lg">
+                <CardHeader>
+                    <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit">
+                        <Lock className="w-8 h-8 text-primary" />
                     </div>
-                </Card>
-            ))}
-        </div>
+                    <CardTitle className="mt-4">Unlock Data Integrations</CardTitle>
+                    <CardDescription>
+                        This is a Pro feature. Upgrade your plan to connect directly to databases, cloud storage, and other data sources automatically.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ul className="text-left space-y-2 text-sm text-muted-foreground list-disc pl-5 mb-6">
+                        <li>Connect to PostgreSQL, MySQL, and Snowflake</li>
+                        <li>Sync data from Google BigQuery and Amazon S3</li>
+                        <li>Import directly from Google Sheets</li>
+                        <li>Automate your data analysis workflow</li>
+                    </ul>
+                    <Button size="lg" asChild>
+                        <Link href="/dashboard/billing">Upgrade to Pro</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+        ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {integrations.map((integration) => (
+                    <Card key={integration.name} className="flex flex-col">
+                        <CardHeader className="flex flex-row items-start gap-4">
+                            {integration.icon}
+                            <div className="space-y-1">
+                                <CardTitle>{integration.name}</CardTitle>
+                                <CardDescription>{integration.description}</CardDescription>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="flex-grow" />
+                        <div className="p-6 pt-0">
+                            <Button className="w-full" onClick={() => handleConnect(integration.name)}>
+                                Connect
+                            </Button>
+                        </div>
+                    </Card>
+                ))}
+            </div>
+        )}
     </div>
   )
 }
