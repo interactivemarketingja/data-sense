@@ -46,7 +46,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useReports } from '@/context/reports-context'
 
@@ -57,7 +56,7 @@ export default function ReportsPage() {
     const [activeTab, setActiveTab] = React.useState('all')
 
     const filteredReports = React.useMemo(() => {
-        let filtered = [...reports].reverse(); // Show newest first
+        let filtered = reports;
 
         if (activeTab !== 'all') {
             filtered = filtered.filter(report => report.status.toLowerCase() === activeTab)
@@ -160,8 +159,10 @@ export default function ReportsPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>
-                              <Eye className="mr-2 h-4 w-4" /> View
+                             <DropdownMenuItem asChild>
+                               <Link href={`/dashboard/reports/${report.id}`}>
+                                <Eye className="mr-2 h-4 w-4" /> View
+                               </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <Download className="mr-2 h-4 w-4" /> Download

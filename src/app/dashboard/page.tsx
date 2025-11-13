@@ -5,6 +5,7 @@ import DataUpload from '@/components/dashboard/data-upload'
 import AnalysisDisplay from '@/components/dashboard/analysis-display'
 import { useReports } from '@/context/reports-context'
 import { useRouter } from 'next/navigation'
+import { useToast } from '@/hooks/use-toast'
 
 export type AnalysisResult = {
   summary: string;
@@ -24,6 +25,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null)
   const { addReport } = useReports();
   const router = useRouter();
+  const { toast } = useToast();
 
 
   const handleAnalysis = async (file: File) => {
@@ -91,8 +93,12 @@ export default function DashboardPage() {
       addReport({
         name: title,
         status: 'Published',
-        // In a real app, the full analysisResult would be stored
+        analysis: analysisResult
       });
+      toast({
+        title: "Report Saved",
+        description: `"${title}" has been saved.`
+      })
       router.push('/dashboard/reports');
     }
   };
@@ -110,6 +116,7 @@ export default function DashboardPage() {
           setError(null);
         }}
         onSave={handleSaveReport}
+        isSaved={false}
       />
     </div>
   )
