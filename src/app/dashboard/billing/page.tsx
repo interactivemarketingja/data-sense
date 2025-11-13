@@ -1,6 +1,7 @@
 
 'use client'
 
+import { useState } from "react"
 import { Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,11 +9,11 @@ import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 
-const plans = [
+const plansData = [
     {
         name: 'Free',
-        price: '$0',
-        period: '/ month',
+        monthlyPrice: 0,
+        yearlyPrice: 0,
         description: 'For individuals and small teams getting started.',
         features: [
             { text: '5 reports per month', included: true },
@@ -27,8 +28,8 @@ const plans = [
     },
     {
         name: 'Pro',
-        price: '$29',
-        period: '/ month',
+        monthlyPrice: 29,
+        yearlyPrice: 278, // $29 * 12 * 0.8 = 278.4, rounded
         description: 'For growing businesses that need more power.',
         features: [
             { text: 'Unlimited reports', included: true },
@@ -43,6 +44,8 @@ const plans = [
 ]
 
 export default function BillingPage() {
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
+
   return (
     <div className="space-y-8">
         <div>
@@ -54,21 +57,29 @@ export default function BillingPage() {
         <Separator />
         <div className="space-y-6">
             <div className="flex items-center justify-center space-x-2">
-                <Label htmlFor="billing-cycle">Monthly</Label>
-                <Switch id="billing-cycle" />
-                <Label htmlFor="billing-cycle">Yearly</Label>
+                <Label htmlFor="billing-cycle" className={billingCycle === 'monthly' ? 'text-foreground' : 'text-muted-foreground'}>Monthly</Label>
+                <Switch 
+                    id="billing-cycle" 
+                    checked={billingCycle === 'yearly'}
+                    onCheckedChange={(checked) => setBillingCycle(checked ? 'yearly' : 'monthly')}
+                />
+                <Label htmlFor="billing-cycle" className={billingCycle === 'yearly' ? 'text-foreground' : 'text-muted-foreground'}>Yearly</Label>
                 <span className="text-sm font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">-20%</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                {plans.map((plan) => (
+                {plansData.map((plan) => (
                     <Card key={plan.name} className={`flex flex-col ${plan.isCurrent ? 'border-primary' : ''}`}>
                         <CardHeader>
                             <CardTitle>{plan.name}</CardTitle>
                             <CardDescription>{plan.description}</CardDescription>
                             <div>
-                                <span className="text-4xl font-bold">{plan.price}</span>
-                                <span className="text-muted-foreground">{plan.period}</span>
+                                <span className="text-4xl font-bold">
+                                    ${billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice}
+                                </span>
+                                <span className="text-muted-foreground">
+                                    {plan.monthlyPrice > 0 ? (billingCycle === 'monthly' ? '/ month' : '/ year') : ''}
+                                </span>
                             </div>
                         </CardHeader>
                         <CardContent className="flex-grow">
