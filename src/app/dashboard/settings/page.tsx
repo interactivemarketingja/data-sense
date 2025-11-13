@@ -1,6 +1,7 @@
 
 'use client'
 
+import * as React from 'react'
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -20,10 +21,31 @@ import { useTheme } from "next-themes"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { PlaceHolderImages } from "@/lib/placeholder-images"
 import { User } from "lucide-react"
+import { useToast } from '@/hooks/use-toast'
 
 export default function SettingsPage() {
     const { setTheme, theme } = useTheme()
     const userAvatar = PlaceHolderImages.find((img) => img.id === 'user-avatar');
+    const { toast } = useToast();
+    
+    const [name, setName] = React.useState('Demo User');
+    const [email, setEmail] = React.useState('demo@example.com');
+
+    const handleProfileSave = () => {
+        // In a real application, you would send this data to your backend
+        console.log("Saving profile:", { name, email });
+        toast({
+            title: "Profile Saved",
+            description: "Your profile information has been updated successfully.",
+        })
+    }
+
+    const handleNotificationSave = () => {
+        toast({
+            title: "Preferences Saved",
+            description: "Your notification preferences have been updated.",
+        })
+    }
 
     return (
         <div className="space-y-6">
@@ -62,15 +84,15 @@ export default function SettingsPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="name">Name</Label>
-                                <Input id="name" defaultValue="Demo User" />
+                                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
-                                <Input id="email" type="email" defaultValue="demo@example.com" />
+                                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button>Save changes</Button>
+                            <Button onClick={handleProfileSave}>Save changes</Button>
                         </CardFooter>
                     </Card>
                 </TabsContent>
@@ -175,7 +197,7 @@ export default function SettingsPage() {
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button>Save preferences</Button>
+                            <Button onClick={handleNotificationSave}>Save preferences</Button>
                         </CardFooter>
                     </Card>
                  </TabsContent>
